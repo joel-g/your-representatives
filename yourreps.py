@@ -1,4 +1,8 @@
 import requests
+import ConfigParser
+
+config = ConfigParser.RawConfigParser()
+config.read('config.ini')
 
 res = requests.get('https://whoismyrepresentative.com/getall_mems.php?zip=98404&output=json')
 
