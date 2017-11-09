@@ -37,7 +37,7 @@ def is_replied_to(tweet):
 
 def record_replied_to(tweet):
     with open(replied_to, 'a') as f:
-        f.write(str(m.id) + '\n')
+        f.write(str(tweet.id) + '\n')
 
 def find_reps(zip_code):
     results = requests.get('https://whoismyrepresentative.com/getall_mems.php?zip=' + zip_code + '&output=json')
@@ -61,8 +61,9 @@ def reply_with_reps(author, reps):
                 "Office: " + rep['office']
                 )
                 print("Replied with representative to " + author + "\n sleeping 30 seconds")
-            except:
+            except Exception as e:
                 print("couldn't reply with representative " + rep['name'] + " to " + author)
+                print(e)
         else:
             try:
                 api.update_status(status=
@@ -75,8 +76,9 @@ def reply_with_reps(author, reps):
                 "Office: " + rep['office']
                 )
                 print("Replied with senator to " + author + "\n sleeping 30 seconds")
-            except:
+            except Exception as e:
                 print("couldn't reply with senator " + rep['name'] + " to " + author)
+                print(e)
         time.sleep(30)
 
 def rep_engine():
@@ -91,6 +93,7 @@ def rep_engine():
         
 while True:
     rep_engine()
+    print('Waiting 10 minutes')
     time.sleep(600)
 
 
