@@ -1,4 +1,4 @@
-import requests, sys, tweepy, re
+import requests, sys, tweepy, re, time
 
 config = open('config.ini','r')
 tokens = config.readlines()
@@ -46,36 +46,51 @@ def find_reps(zip_code):
     else:
         return results.json()['results']
 
-def reply_with_congressman(author, reps):
-    # api.update_status(status= t.author.screen_name + "your congressman is " )
-    print(
-        "@" + author + " your rep in the house is:\n" + 
-        reps[0]['name'] + "\n" + 
-        "District: " + reps[0]['district'] + "\n" +
-        "State: " + reps[0]['state'] + "\n" +
-        "Party: " + reps[0]['party'] + "\n" + 
-        "Phone: " + reps[0]['phone'] + "\n" +
-        "Web: " + reps[0]['link']
+def reply_with_reps(author, reps):
+    for rep in reps:
+        if rep['district']:
+            try:
+                api.update_status(status=
+                "@" + author + "\n" +
+                "Representative: " + rep['name'] + "\n" + 
+                "District: " + rep['district'] + "\n" +
+                "State: " + rep['state'] + "\n" +
+                "Party: " + rep['party'] + "\n" + 
+                "Phone: " + rep['phone'] + "\n" +
+                "Web: " + rep['link'] + "\n"
+                "Office: " + rep['office']
+                )
+                print("Replied with representative to " + author + "\n sleeping 30 seconds")
+            except:
+                print("couldn't reply with representative " + rep['name'] + " to " + author)
+        else:
+            try:
+                api.update_status(status=
+                "@" + author + "\n" +
+                "Senator: " + rep['name'] + "\n" + 
+                "State: " + rep['state'] + "\n" +
+                "Party: " + rep['party'] + "\n" + 
+                "Phone: " + rep['phone'] + "\n" +
+                "Web: " + rep['link'] + "\n"
+                "Office: " + rep['office']
+                )
+                print("Replied with senator to " + author + "\n sleeping 30 seconds")
+            except:
+                print("couldn't reply with senator " + rep['name'] + " to " + author)
+        time.sleep(30)
 
-    )
-
-
-for m in mentions:
-    zip_code = get_zip_code(m)
-    # if is_replied_to(m):
-
-    if not is_replied_to(m):
-        if zip_code:
+def rep_engine():
+    for m in mentions:
+        zip_code = get_zip_code(m)
+        if zip_code and not is_replied_to(m):
             reps = find_reps(zip_code)
             if reps:
-                congressman = reps[0]
-                senator1 = reps[1]
-                senator2 = reps[2]
-                reply_with_congressman(m.author.screen_name, reps)
+                reply_with_reps(m.author.screen_name, reps)
                 record_replied_to(m)
-
-    print('---------')
+        print('---------')
         
-
+while True:
+    rep_engine()
+    time.sleep(600)
 
 
