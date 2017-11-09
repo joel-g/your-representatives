@@ -14,13 +14,6 @@ auth = tweepy.OAuthHandler(CONSUMER_KEY, CONSUMER_SECRET)
 auth.set_access_token(ACCESS_KEY, ACCESS_SECRET)
 api = tweepy.API(auth)
 
-
-
-# print(results.json()['resultsults'][0])
-# print(results.json()['resultsults'][1])
-
-# api.update_status(status="test")
-
 def get_zip_code(tweet):
     if re.search('\d{5}', tweet.text):
         return re.search('\d{5}', tweet.text).group(0)
