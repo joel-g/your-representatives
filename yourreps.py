@@ -16,8 +16,8 @@ api = tweepy.API(auth)
 
 
 
-# print(res.json()['results'][0])
-# print(res.json()['results'][1])
+# print(results.json()['resultsults'][0])
+# print(results.json()['resultsults'][1])
 
 # api.update_status(status="test")
 mentions = api.mentions_timeline()
@@ -40,21 +40,42 @@ def record_replied_to(tweet):
         f.write(str(m.id) + '\n')
 
 def find_reps(zip_code):
-    res = requests.get('https://whoismyrepresentative.com/getall_mems.php?zip=' + zip_code + '&output=json')
-    print(res.json())    
+    results = requests.get('https://whoismyrepresentative.com/getall_mems.php?zip=' + zip_code + '&output=json')
+    if 'No Data Found' in results.text:
+        return False
+    else:
+        return results.json()['results']
+
+def reply_with_congressman(author, reps):
+    # api.update_status(status= t.author.screen_name + "your congressman is " )
+    print(
+        "@" + author + " your rep in the house is:\n" + 
+        reps[0]['name'] + "\n" + 
+        "District: " + reps[0]['district'] + "\n" +
+        "State: " + reps[0]['state'] + "\n" +
+        "Party: " + reps[0]['party'] + "\n" + 
+        "Phone: " + reps[0]['phone'] + "\n" +
+        "Web: " + reps[0]['link']
+
+    )
+
 
 for m in mentions:
     zip_code = get_zip_code(m)
     # if is_replied_to(m):
 
     if not is_replied_to(m):
-        record_replied_to(m)
-    print(zip_code)
-    print((m.author.screen_name))
-    print(m.text)
-    print(m.id)
+        if zip_code:
+            reps = find_reps(zip_code)
+            if reps:
+                congressman = reps[0]
+                senator1 = reps[1]
+                senator2 = reps[2]
+                reply_with_congressman(m.author.screen_name, reps)
+                record_replied_to(m)
+
     print('---------')
         
-find_reps('98404')
+
 
 
