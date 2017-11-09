@@ -20,7 +20,6 @@ api = tweepy.API(auth)
 # print(results.json()['resultsults'][1])
 
 # api.update_status(status="test")
-mentions = api.mentions_timeline()
 
 def get_zip_code(tweet):
     if re.search('\d{5}', tweet.text):
@@ -82,6 +81,7 @@ def reply_with_reps(author, reps):
         time.sleep(30)
 
 def rep_engine():
+    mentions = api.mentions_timeline()
     for m in mentions:
         zip_code = get_zip_code(m)
         if zip_code and not is_replied_to(m):
@@ -92,6 +92,7 @@ def rep_engine():
         print('---------')
         
 while True:
+    print('Starting...')
     rep_engine()
     print('Waiting 10 minutes')
     time.sleep(600)
