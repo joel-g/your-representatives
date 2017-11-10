@@ -1,4 +1,5 @@
 import requests, sys, tweepy, re, time
+from bs4 import BeautifulSoup
 
 config = open('config.ini','r')
 tokens = config.readlines()
@@ -84,10 +85,27 @@ def rep_engine():
                 record_replied_to(m)
         print('---------')
         
-while True:
-    print('Starting...')
-    rep_engine()
-    print('Waiting 10 minutes')
-    time.sleep(600)
+
+def get_reps_twitter(rep):
+    tweetcongress = 'https://www.thomasmore.org/us-senate-twitter-account-list/'
+    page = requests.get(tweetcongress).content
+    soup = BeautifulSoup(page, 'html.parser')
+    table = soup.find('tbody', attrs={'class': 'row-hover'})
+    
+    return table.children
+
+
+list_a = get_reps_twitter("WA")
+
+for n in list_a:
+    # if 'Rand Paul' in n:
+    # if "Rand Paul" in n:
+        print(n.find('td', attrs={'class': 'column-4'}))
+
+# while True:
+#     print('Starting...')
+#     rep_engine()
+#     print('Waiting 10 minutes')
+#     time.sleep(600)
 
 
