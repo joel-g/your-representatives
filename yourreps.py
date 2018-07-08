@@ -95,6 +95,6 @@ def rep_engine():
 while True:
     print('Starting...')
     rep_engine()
-    print('Waiting 10 minutes')
-    time.sleep(600)
+    print('Waiting 5 minutes')
+    time.sleep(300)
 
