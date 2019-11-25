@@ -91,10 +91,6 @@ def rep_engine():
                 reply_with_reps(m.author.screen_name, reps, m.id)
                 record_replied_to(m)
         print('---------')
-        
-while True:
-    print('Starting...')
-    rep_engine()
-    print('Waiting 5 minutes')
-    time.sleep(300)
 
+if __name__ == "__main__":
+    rep_engine()
